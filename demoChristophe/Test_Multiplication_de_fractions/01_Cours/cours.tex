@@ -1,0 +1,148 @@
+
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{fancyhdr}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{fontawesome}
+\usepackage{tcolorbox}
+
+\geometry{margin=2.5cm}
+
+% Couleurs enfant-friendly
+\definecolor{primary}{RGB}{52, 152, 219}
+\definecolor{secondary}{RGB}{46, 204, 113}
+\definecolor{accent}{RGB}{155, 89, 182}
+\definecolor{warning}{RGB}{230, 126, 34}
+\definecolor{success}{RGB}{39, 174, 96}
+\definecolor{lightgray}{RGB}{236, 240, 241}
+
+% Configuration des liens
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=accent,
+    citecolor=secondary
+}
+
+% Définitions des environnements enfant-friendly
+\newtheorem{definition}{Définition}[section]
+\newtheorem{propriete}{Propriété}[section]
+\newtheorem{theoreme}{Théorème}[section]
+
+% Environnements colorés et amicaux
+\newenvironment{exemple}{\begin{tcolorbox}[colback=lightgray,colframe=primary,title=\textbf{\textcolor{primary}{Exemple}}]}{\end{tcolorbox}}
+\newenvironment{methode}{\begin{tcolorbox}[colback=lightgray,colframe=secondary,title=\textbf{\textcolor{secondary}{Méthode}}]}{\end{tcolorbox}}
+\newenvironment{remarque}{\begin{tcolorbox}[colback=lightgray,colframe=warning,title=\textbf{\textcolor{warning}{Remarque importante}}]}{\end{tcolorbox}}
+\newenvironment{astuce}{\begin{tcolorbox}[colback=lightgray,colframe=accent,title=\textbf{\textcolor{accent}{Astuce}}]}{\end{tcolorbox}}
+
+% Compteur d'exercices avec icône
+\newcounter{exercicecounter}
+\newcommand{\exercice}[1]{\stepcounter{exercicecounter}\textbf{\textcolor{primary}{Exercice \theexercicecounter}} \textcolor{primary}{#1}}
+
+% Titre de section coloré
+\newcommand{\sectioncolor}[1]{\section{\textcolor{primary}{#1}}}
+
+% Environnements pour exercices
+\newenvironment{question}{\begin{tcolorbox}[colback=lightgray,colframe=primary,title=\textbf{\textcolor{primary}{Question}}]}{\end{tcolorbox}}
+\newenvironment{indice}{\begin{tcolorbox}[colback=lightgray,colframe=accent,title=\textbf{\textcolor{accent}{Indice}}]}{\end{tcolorbox}}
+
+% En-tête et pied de page enfant-friendly
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{primary}{\textbf{4ème - Multiplication de fractions}}}
+\fancyhead[R]{\textcolor{accent}{\textbf{cours}}}
+\fancyfoot[C]{\textcolor{primary}{\thepage}}
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{primary}\leaders\hrule height \headrulewidth\hfill}}
+
+% Titre principal avec style enfant-friendly
+\title{\Huge\textcolor{primary}{\textbf{Multiplication de fractions}}\\[0.5cm]
+\Large\textcolor{accent}{Cours de Mathématiques}}
+\author{\Large\textcolor{secondary}{\textbf{Généré automatiquement}}}
+\date{\Large\textcolor{warning}{\textbf{\today}}}
+
+\begin{document}
+
+% Page de titre colorée
+\begin{titlepage}
+\begin{center}
+\vspace*{2cm}
+
+% Logo ou icône
+\begin{tikzpicture}
+\draw[fill=primary,rounded corners=10pt] (0,0) rectangle (4,4);
+\node[white,font=\Huge] at (2,2) {M};
+\end{tikzpicture}
+
+\vspace{1cm}
+
+{\Huge\textcolor{primary}{\textbf{Multiplication de fractions}}}
+
+\vspace{0.5cm}
+
+{\Large\textcolor{accent}{Cours de Mathématiques}}
+
+\vspace{1cm}
+
+{\Large\textcolor{secondary}{\textbf{4ème}}}
+
+\vspace{0.5cm}
+
+{\large\textcolor{warning}{\textbf{\today}}}
+
+\vspace{2cm}
+
+% Boîte d'objectifs
+\begin{tcolorbox}[colback=lightgray,colframe=success,title=\textbf{\textcolor{success}{Objectifs du cours}}]
+\begin{itemize}
+\item Comprendre les concepts mathématiques
+\item S'entraîner avec des exercices
+\item Progresser étape par étape
+\end{itemize}
+\end{tcolorbox}
+
+\end{center}
+\end{titlepage}
+
+% Table des matières
+\tableofcontents
+\newpage
+
+% Contenu principal
+Voici un cours court en LaTeX sur la multiplication de fractions :
+
+
+
+\section*{Multiplication de fractions}
+
+\subsection*{Définition}
+La multiplication de deux fractions consiste à multiplier les numérateurs entre eux et les dénominateurs entre eux. Ainsi, pour multiplier les fractions $\frac{a}{b}$ et $\frac{c}{d}$, on obtient $\frac{a \times c}{b \times d}$.
+
+\subsection*{Exemple}
+Soit à multiplier $\frac{2}{3}$ et $\frac{5}{7}$. En appliquant la définition, on a :
+\[
+\frac{2}{3} \times \frac{5}{7} = \frac{2 \times 5}{3 \times 7} = \frac{10}{21}
+\]
+
+\subsection*{Propriété essentielle}
+La multiplication de fractions est commutative, c'est-à-dire que l'ordre des facteurs n'a pas d'importance. Ainsi, $\frac{a}{b} \times \frac{c}{d} = \frac{c}{d} \times \frac{a}{b}$.
+
+% Page de fin avec encouragement
+\newpage
+\begin{center}
+\begin{tcolorbox}[colback=lightgray,colframe=success,title=\textbf{\textcolor{success}{Bravo !}}]
+\Large\textbf{\textcolor{success}{Tu as terminé ce cours !}}\\[0.5cm]
+\textcolor{secondary}{Continue à t'entraîner et tu deviendras un expert en mathématiques !}\\[0.5cm]
+\textcolor{accent}{*****}
+\end{tcolorbox}
+\end{center}
+
+\end{document}

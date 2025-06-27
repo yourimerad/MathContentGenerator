@@ -1,0 +1,23 @@
+course:
+  level: "4ème"
+  sessions_per_year: 120
+  curriculum_sources:
+    - type: "text"
+      content: "Programme officiel de mathématiques 4ème - Éducation Nationale"
+  resources:
+    - type: "text"
+      content: "Manuel Sésamath 4ème"
+  output_path: "./output"
+
+api:
+  model: "claude-3-5-sonnet-20241022"
+  max_tokens: 4000
+  temperature: 0.3
+  use_cache: true
+  batch_processing: true
+  retry_attempts: 3
+
+workflow:
+  ai_orchestration: true
+  contextual_memory: true
+  adaptive_planning: true 

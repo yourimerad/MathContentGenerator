@@ -1,0 +1,145 @@
+
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{fancyhdr}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{fontawesome}
+\usepackage{tcolorbox}
+
+\geometry{margin=2.5cm}
+
+% Couleurs enfant-friendly
+\definecolor{primary}{RGB}{52, 152, 219}
+\definecolor{secondary}{RGB}{46, 204, 113}
+\definecolor{accent}{RGB}{155, 89, 182}
+\definecolor{warning}{RGB}{230, 126, 34}
+\definecolor{success}{RGB}{39, 174, 96}
+\definecolor{lightgray}{RGB}{236, 240, 241}
+
+% Configuration des liens
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=accent,
+    citecolor=secondary
+}
+
+% Définitions des environnements enfant-friendly
+\newtheorem{definition}{Définition}[section]
+\newtheorem{propriete}{Propriété}[section]
+\newtheorem{theoreme}{Théorème}[section]
+
+% Environnements colorés et amicaux
+\newenvironment{exemple}{\begin{tcolorbox}[colback=lightgray,colframe=primary,title=\textbf{\textcolor{primary}{Exemple}}]}{\end{tcolorbox}}
+\newenvironment{methode}{\begin{tcolorbox}[colback=lightgray,colframe=secondary,title=\textbf{\textcolor{secondary}{Méthode}}]}{\end{tcolorbox}}
+\newenvironment{remarque}{\begin{tcolorbox}[colback=lightgray,colframe=warning,title=\textbf{\textcolor{warning}{Remarque importante}}]}{\end{tcolorbox}}
+\newenvironment{astuce}{\begin{tcolorbox}[colback=lightgray,colframe=accent,title=\textbf{\textcolor{accent}{Astuce}}]}{\end{tcolorbox}}
+
+% Compteur d'exercices avec icône
+\newcounter{exercicecounter}
+\newcommand{\exercice}[1]{\stepcounter{exercicecounter}\textbf{\textcolor{primary}{Exercice \theexercicecounter}} \textcolor{primary}{#1}}
+
+% Titre de section coloré
+\newcommand{\sectioncolor}[1]{\section{\textcolor{primary}{#1}}}
+
+% Environnements pour exercices
+\newenvironment{question}{\begin{tcolorbox}[colback=lightgray,colframe=primary,title=\textbf{\textcolor{primary}{Question}}]}{\end{tcolorbox}}
+\newenvironment{indice}{\begin{tcolorbox}[colback=lightgray,colframe=accent,title=\textbf{\textcolor{accent}{Indice}}]}{\end{tcolorbox}}
+
+% En-tête et pied de page enfant-friendly
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{primary}{\textbf{4ème - Pythagore}}}
+\fancyhead[R]{\textcolor{accent}{\textbf{cours}}}
+\fancyfoot[C]{\textcolor{primary}{\thepage}}
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{primary}\leaders\hrule height \headrulewidth\hfill}}
+
+% Titre principal avec style enfant-friendly
+\title{\Huge\textcolor{primary}{\textbf{Pythagore}}\\[0.5cm]
+\Large\textcolor{accent}{Cours de Mathématiques}}
+\author{\Large\textcolor{secondary}{\textbf{Généré automatiquement}}}
+\date{\Large\textcolor{warning}{\textbf{\today}}}
+
+\begin{document}
+
+% Page de titre colorée
+\begin{titlepage}
+\begin{center}
+\vspace*{2cm}
+
+% Logo ou icône
+\begin{tikzpicture}
+\draw[fill=primary,rounded corners=10pt] (0,0) rectangle (4,4);
+\node[white,font=\Huge] at (2,2) {M};
+\end{tikzpicture}
+
+\vspace{1cm}
+
+{\Huge\textcolor{primary}{\textbf{Pythagore}}}
+
+\vspace{0.5cm}
+
+{\Large\textcolor{accent}{Cours de Mathématiques}}
+
+\vspace{1cm}
+
+{\Large\textcolor{secondary}{\textbf{4ème}}}
+
+\vspace{0.5cm}
+
+{\large\textcolor{warning}{\textbf{\today}}}
+
+\vspace{2cm}
+
+% Boîte d'objectifs
+\begin{tcolorbox}[colback=lightgray,colframe=success,title=\textbf{\textcolor{success}{Objectifs du cours}}]
+\begin{itemize}
+\item Comprendre les concepts mathématiques
+\item S'entraîner avec des exercices
+\item Progresser étape par étape
+\end{itemize}
+\end{tcolorbox}
+
+\end{center}
+\end{titlepage}
+
+% Table des matières
+\tableofcontents
+\newpage
+
+% Contenu principal
+Voici un cours très court (environ 200 mots) sur Pythagore en LaTeX :
+
+
+
+\section*{Pythagore}
+
+\subsection*{Définition}
+Le théorème de Pythagore est un théorème fondamental de la géométrie euclidienne. Il établit une relation entre les longueurs des côtés d'un triangle rectangle. Selon ce théorème, dans un triangle rectangle, le carré de la longueur de l'hypoténuse (le côté opposé à l'angle droit) est égal à la somme des carrés des longueurs des deux autres côtés.
+
+\subsection*{Exemple}
+Considérons un triangle rectangle ABC, avec $a$ la longueur du côté opposé à l'angle aigu $\alpha$, $b$ la longueur du côté opposé à l'angle aigu $\beta$, et $c$ la longueur de l'hypoténuse. Selon le théorème de Pythagore, on a : $a^2 + b^2 = c^2$.
+
+\subsection*{Propriété essentielle}
+Le théorème de Pythagore est une propriété fondamentale des triangles rectangles. Il permet de calculer la longueur de l'hypoténuse connaissant les longueurs des deux autres côtés, ou inversement, de calculer la longueur d'un côté connaissant les longueurs des deux autres. Cette propriété est largement utilisée en géométrie, en trigonométrie et dans de nombreuses applications pratiques.
+
+% Page de fin avec encouragement
+\newpage
+\begin{center}
+\begin{tcolorbox}[colback=lightgray,colframe=success,title=\textbf{\textcolor{success}{Bravo !}}]
+\Large\textbf{\textcolor{success}{Tu as terminé ce cours !}}\\[0.5cm]
+\textcolor{secondary}{Continue à t'entraîner et tu deviendras un expert en mathématiques !}\\[0.5cm]
+\textcolor{accent}{*****}
+\end{tcolorbox}
+\end{center}
+
+\end{document}
