@@ -238,22 +238,36 @@ class ProgramStructure:
         "communiquer": Competency(...)
     })
     
-    # Domaines mathématiques
-    domains: Dict[str, Domain] = field(default_factory=lambda: {
-        "nombres_et_calculs": Domain(
+    # Chapitres avec domaines associés (STRUCTURE REFACTORISÉE)
+    chapters: List[Chapter] = field(default_factory=list)
+    
+    # Domaines mathématiques (référentiel)
+    domains: Dict[str, DomainDefinition] = field(default_factory=lambda: {
+        "nombres_et_calculs": DomainDefinition(
             name="Nombres et calculs",
-            chapters=[
-                Chapter("Nombres relatifs", 12, ["addition", "soustraction"]),
-                Chapter("Fractions", 15, ["operations", "problemes"]),
-                # ...
-            ],
-            total_hours=35,
-            competencies_focus=["calculer", "raisonner"]
+            description="Comprendre et utiliser les nombres...",
+            key_competencies=["calculer", "raisonner"]
         ),
-        "organisation_et_gestion_de_donnees": Domain(...),
-        "grandeurs_et_mesures": Domain(...),
-        "espace_et_geometrie": Domain(...),
-        "algorithmique_et_programmation": Domain(...)
+        "organisation_et_gestion_de_donnees": DomainDefinition(
+            name="Organisation et gestion de données, fonctions",
+            description="Interpréter, représenter et traiter des données...",
+            key_competencies=["représenter", "modéliser", "raisonner"]
+        ),
+        "grandeurs_et_mesures": DomainDefinition(
+            name="Grandeurs et mesures",
+            description="Comparer, estimer, mesurer des grandeurs...",
+            key_competencies=["chercher", "calculer", "communiquer"]
+        ),
+        "espace_et_geometrie": DomainDefinition(
+            name="Espace et géométrie",
+            description="Représenter l'espace et utiliser les notions de géométrie...",
+            key_competencies=["représenter", "raisonner", "communiquer"]
+        ),
+        "algorithmique_et_programmation": DomainDefinition(
+            name="Algorithmique et programmation",
+            description="Écrire, mettre au point et exécuter un programme...",
+            key_competencies=["chercher", "modéliser", "représenter"]
+        )
     })
     
     # Progressions et attendus
@@ -267,30 +281,133 @@ class ProgramStructure:
     accompanying_resources: List[Resource]
 ```
 
-### Domain
+### Chapter (REFACTORISÉ)
 ```python
 @dataclass
-class Domain:
-    """Domaine mathématique du programme"""
-    name: str
+class Chapter:
+    """Chapitre du programme avec domaines associés"""
+    
+    # Identification
+    id: UUID
+    title: str
     description: str
     
+    # Domaines concernés avec pondération
+    domain_weights: Dict[str, float] = field(default_factory=dict)
+    # Exemple: {
+    #     "nombres_et_calculs": 0.6,
+    #     "grandeurs_et_mesures": 0.3,
+    #     "organisation_et_gestion_de_donnees": 0.1
+    # }
+    
+    # Caractéristiques pédagogiques
+    estimated_hours: int
+    suggested_period: List[int]  # Périodes 1-5
+    
     # Contenu
-    chapters: List[ChapterSpec]
-    concepts: List[Concept]
+    main_concepts: List[Concept]
+    learning_objectives: List[LearningObjective]
     
-    # Temps et répartition
-    total_hours: int
-    percentage_of_year: float
-    suggested_periods: List[int]  # Périodes 1-5
+    # Compétences travaillées
+    competencies_focus: Dict[str, float]  # Pondération des compétences
     
-    # Liens pédagogiques
-    competencies_focus: List[str]
-    cross_domain_links: List[str]
+    # Relations avec autres chapitres
+    prerequisites: List[str]  # IDs des chapitres prérequis
+    prepares_for: List[str]   # IDs des chapitres suivants
     
-    # Difficultés connues
+    # Difficultés et obstacles
     known_difficulties: List[Difficulty]
     didactic_obstacles: List[Obstacle]
+    
+    # Ressources spécifiques
+    recommended_resources: List[Resource]
+    
+    def get_primary_domain(self) -> str:
+        """Retourne le domaine principal (plus forte pondération)"""
+        return max(self.domain_weights.items(), key=lambda x: x[1])[0]
+    
+    def get_all_domains(self) -> List[str]:
+        """Retourne tous les domaines concernés"""
+        return list(self.domain_weights.keys())
+    
+    def is_multidomain(self) -> bool:
+        """Vérifie si le chapitre est transversal"""
+        return len(self.domain_weights) > 1
+```
+
+### DomainDefinition (NOUVEAU)
+```python
+@dataclass
+class DomainDefinition:
+    """Définition d'un domaine mathématique"""
+    name: str
+    description: str
+    key_competencies: List[str]
+    
+    # Méta-informations
+    evaluation_weight: float = 0.2  # Poids dans l'évaluation globale
+    color_code: str = "#000000"     # Pour visualisation
+```
+
+### ChapterExamples (EXEMPLES RÉALISTES)
+```python
+# Exemples de chapitres multi-domaines pour la 5ème
+
+chapter_examples = [
+    Chapter(
+        title="Proportionnalité et pourcentages",
+        domain_weights={
+            "organisation_et_gestion_de_donnees": 0.5,
+            "nombres_et_calculs": 0.3,
+            "grandeurs_et_mesures": 0.2
+        },
+        estimated_hours=15,
+        description="Reconnaître et utiliser la proportionnalité dans divers contextes"
+    ),
+    
+    Chapter(
+        title="Aires et périmètres",
+        domain_weights={
+            "grandeurs_et_mesures": 0.6,
+            "espace_et_geometrie": 0.3,
+            "nombres_et_calculs": 0.1
+        },
+        estimated_hours=12,
+        description="Calculer et comparer des aires et périmètres de figures"
+    ),
+    
+    Chapter(
+        title="Statistiques et représentations",
+        domain_weights={
+            "organisation_et_gestion_de_donnees": 0.7,
+            "nombres_et_calculs": 0.2,
+            "algorithmique_et_programmation": 0.1
+        },
+        estimated_hours=10,
+        description="Organiser et représenter des données statistiques"
+    ),
+    
+    Chapter(
+        title="Nombres relatifs",
+        domain_weights={
+            "nombres_et_calculs": 0.9,
+            "algorithmique_et_programmation": 0.1
+        },
+        estimated_hours=14,
+        description="Comprendre et manipuler les nombres négatifs"
+    ),
+    
+    Chapter(
+        title="Transformations géométriques",
+        domain_weights={
+            "espace_et_geometrie": 0.7,
+            "algorithmique_et_programmation": 0.2,
+            "grandeurs_et_mesures": 0.1
+        },
+        estimated_hours=11,
+        description="Symétries, translations et rotations"
+    )
+]
 ```
 
 ### DidacticAnalysis
@@ -395,6 +512,37 @@ class DetailedYearPlanning:
     
     # Optimisations
     optimization_metrics: OptimizationMetrics
+    
+    # Analyse de couverture des domaines
+    domain_coverage_analysis: DomainCoverageAnalysis
+```
+
+### DomainCoverageAnalysis (NOUVEAU)
+```python
+@dataclass
+class DomainCoverageAnalysis:
+    """Analyse de la couverture des domaines sur l'année"""
+    
+    # Heures totales par domaine
+    total_hours_by_domain: Dict[str, float] = field(default_factory=dict)
+    # Calculé en agrégeant les heures des chapitres × leurs pondérations
+    
+    # Pourcentage du temps annuel par domaine
+    percentage_by_domain: Dict[str, float] = field(default_factory=dict)
+    
+    # Équilibre entre domaines
+    balance_score: float  # 0-1, 1 = parfaitement équilibré
+    
+    # Progression temporelle
+    domain_distribution_by_period: Dict[int, Dict[str, float]]
+    
+    # Alertes
+    warnings: List[str] = field(default_factory=list)
+    # Ex: "Le domaine 'algorithmique' ne représente que 5% du temps annuel"
+    
+    def is_balanced(self) -> bool:
+        """Vérifie si la répartition respecte les recommandations officielles"""
+        return self.balance_score > 0.8
 ```
 
 ### SessionPlanning
@@ -421,6 +569,10 @@ class SessionPlanning:
     # Objectifs pédagogiques
     learning_objectives: List[LearningObjective] = field(default_factory=list)
     competencies_worked: List[str] = field(default_factory=list)
+    
+    # Domaines travaillés dans cette séance
+    domains_covered: Dict[str, float] = field(default_factory=dict)
+    # Hérité du chapitre mais peut être ajusté pour certaines séances
     
     # Structure de la séance
     session_structure: SessionStructure = field(default_factory=lambda: {
@@ -449,7 +601,9 @@ class ChapterPlanning:
     # Identification
     chapter_id: UUID
     title: str
-    domain: str
+    
+    # Domaines (hérité du Chapter)
+    domain_weights: Dict[str, float]
     
     # Temporel
     period: int
@@ -479,6 +633,9 @@ class ChapterPlanning:
     # Ressources
     resources_needed: List[Resource]
     digital_tools: List[DigitalTool]
+    
+    # Analyse transversale
+    cross_domain_activities: List[CrossDomainActivity]
 ```
 
 ---
@@ -499,7 +656,8 @@ class CompleteYearContent:
         "by_chapter": Dict[UUID, List[Exercise]],
         "by_difficulty": Dict[Difficulty, List[Exercise]],
         "by_competency": Dict[str, List[Exercise]],
-        "by_type": Dict[ExerciseType, List[Exercise]]
+        "by_type": Dict[ExerciseType, List[Exercise]],
+        "by_domain": Dict[str, List[Exercise]]  # NOUVEAU
     })
     
     # Évaluations
@@ -507,7 +665,8 @@ class CompleteYearContent:
         "diagnostic": List[DiagnosticEvaluation],
         "formative": List[FormativeEvaluation],
         "summative": List[SummativeEvaluation],
-        "differentiated": Dict[str, List[Evaluation]]
+        "differentiated": Dict[str, List[Evaluation]],
+        "multidomain": List[MultiDomainEvaluation]  # NOUVEAU
     })
     
     # Corrections
@@ -519,7 +678,8 @@ class CompleteYearContent:
         "chapter_guides": Dict[UUID, ChapterGuide],
         "differentiation_strategies": List[Strategy],
         "common_errors_guide": ErrorsGuide,
-        "assessment_rubrics": Dict[UUID, Rubric]
+        "assessment_rubrics": Dict[UUID, Rubric],
+        "cross_domain_connections": CrossDomainGuide  # NOUVEAU
     })
     
     # Ressources élèves
@@ -538,19 +698,22 @@ class ChapterContent:
     # Identification
     chapter_id: UUID
     title: str
+    domain_weights: Dict[str, float]  # NOUVEAU
     
     # Cours structuré
     course_content: CourseContent = field(default_factory=lambda: {
         "introduction": Introduction(
             hook="Situation motivante",
             real_world_connection="Application concrète",
-            learning_objectives=List[str]
+            learning_objectives=List[str],
+            domains_introduction=Dict[str, str]  # NOUVEAU: intro par domaine
         ),
         "sections": List[CourseSection],
         "synthesis": Synthesis(
             key_points=List[str],
             methods_summary=List[Method],
-            common_pitfalls=List[str]
+            common_pitfalls=List[str],
+            domain_connections=Dict[str, List[str]]  # NOUVEAU
         ),
         "knowledge_map": ConceptMap
     })
@@ -564,7 +727,8 @@ class ChapterContent:
         "application": List[ApplicationExercise],
         "training": List[TrainingExercise],
         "problems": List[Problem],
-        "challenges": List[Challenge]
+        "challenges": List[Challenge],
+        "cross_domain": List[CrossDomainExercise]  # NOUVEAU
     })
     
     # Évaluations du chapitre
@@ -596,6 +760,10 @@ class Exercise:
     difficulty: Difficulty      # EASY | MEDIUM | HARD | EXPERT
     estimated_time: int         # minutes
     
+    # Domaines concernés (NOUVEAU)
+    domains_involved: Dict[str, float] = field(default_factory=dict)
+    # Ex: {"nombres_et_calculs": 0.7, "grandeurs_et_mesures": 0.3}
+    
     # Contenu
     statement: ExerciseStatement = field(default_factory=lambda: {
         "context": Optional[str],
@@ -616,7 +784,8 @@ class Exercise:
         "final_answer": str,
         "verification": Optional[str],
         "common_errors": List[str],
-        "hints": List[str]
+        "hints": List[str],
+        "domain_insights": Dict[str, str]  # NOUVEAU: insights par domaine
     })
     
     # Variantes
@@ -625,6 +794,34 @@ class Exercise:
     # Métadonnées
     tags: List[str]
     usage_stats: Optional[UsageStats]
+    
+    def is_multidomain(self) -> bool:
+        """Vérifie si l'exercice touche plusieurs domaines"""
+        return len(self.domains_involved) > 1
+```
+
+### CrossDomainExercise (NOUVEAU)
+```python
+@dataclass
+class CrossDomainExercise(Exercise):
+    """Exercice spécifiquement conçu pour travailler plusieurs domaines"""
+    
+    # Objectif transversal
+    cross_domain_objective: str
+    
+    # Connexions explicites
+    domain_connections: Dict[str, str] = field(default_factory=dict)
+    # Ex: {
+    #     "nombres_et_calculs": "Utiliser les pourcentages",
+    #     "organisation_donnees": "Lire et interpréter un graphique",
+    #     "grandeurs_mesures": "Convertir des unités"
+    # }
+    
+    # Évaluation par domaine
+    assessment_criteria_by_domain: Dict[str, List[Criterion]]
+    
+    # Exemple concret
+    real_world_application: str
 ```
 
 ### Evaluation
@@ -642,6 +839,10 @@ class Evaluation:
     duration_minutes: int
     suggested_date: Optional[date]
     
+    # Chapitres et domaines évalués (MODIFIÉ)
+    chapters_evaluated: List[str]
+    domains_coverage: Dict[str, float]  # NOUVEAU
+    
     # Contenu
     instructions: EvaluationInstructions
     exercises: List[EvaluationExercise]
@@ -651,6 +852,7 @@ class Evaluation:
         "total_points": 20,
         "exercises_points": Dict[int, float],
         "competencies_grid": Dict[str, float],
+        "domains_grid": Dict[str, float],  # NOUVEAU
         "bonus_points": Optional[float]
     })
     
@@ -664,6 +866,7 @@ class Evaluation:
     # Analyse
     expected_results: ExpectedResults
     common_mistakes: List[CommonMistake]
+    domain_analysis: DomainPerformanceAnalysis  # NOUVEAU
 ```
 
 ---
@@ -692,7 +895,8 @@ class ValidationReport:
         "content_completeness": 0.0,        # Exhaustivité
         "mathematical_accuracy": 0.0,       # Exactitude mathématique
         "language_quality": 0.0,            # Qualité rédactionnelle
-        "accessibility": 0.0                # Accessibilité
+        "accessibility": 0.0,               # Accessibilité
+        "domain_balance": 0.0               # NOUVEAU: Équilibre des domaines
     })
     
     # Problèmes identifiés
@@ -706,6 +910,31 @@ class ValidationReport:
     
     # Analyse détaillée
     detailed_analysis: DetailedAnalysis
+    
+    # Analyse spécifique des domaines (NOUVEAU)
+    domain_validation: DomainValidationReport
+```
+
+### DomainValidationReport (NOUVEAU)
+```python
+@dataclass
+class DomainValidationReport:
+    """Validation de la couverture et de l'équilibre des domaines"""
+    
+    # Couverture par domaine
+    domain_coverage: Dict[str, float]  # Pourcentage du temps total
+    
+    # Conformité aux recommandations officielles
+    official_compliance: Dict[str, bool]
+    
+    # Analyse de la progression
+    domain_progression_quality: Dict[str, float]
+    
+    # Identification des déséquilibres
+    imbalances: List[DomainImbalance] = field(default_factory=list)
+    
+    # Recommandations
+    recommendations: List[str] = field(default_factory=list)
 ```
 
 ### ValidationIssue
@@ -717,7 +946,7 @@ class ValidationIssue:
     # Identification
     issue_id: UUID
     severity: Severity              # CRITICAL | HIGH | MEDIUM | LOW
-    category: IssueCategory         # CONTENT | PEDAGOGY | TECHNICAL | COMPLIANCE
+    category: IssueCategory         # CONTENT | PEDAGOGY | TECHNICAL | COMPLIANCE | DOMAIN_BALANCE
     
     # Localisation
     location: ContentLocation = field(default_factory=lambda: {
@@ -766,23 +995,27 @@ class YearPackage:
                 "Progression annuelle",
                 "Objectifs par période",
                 "Stratégies pédagogiques",
-                "Gestion de classe"
+                "Gestion de classe",
+                "Approche multi-domaines"  # NOUVEAU
             ]
         ),
         "session_guides": List[SessionGuide],
         "assessment_package": AssessmentPackage,
         "differentiation_toolkit": DifferentiationToolkit,
-        "digital_resources_guide": DigitalGuide
+        "digital_resources_guide": DigitalGuide,
+        "cross_domain_connections": CrossDomainTeachingGuide  # NOUVEAU
     })
     
     # Matériel élève
     student_package: StudentPackage = field(default_factory=lambda: {
         "textbook": Textbook(
             chapters=List[FormattedChapter],
-            appendices=List[Appendix]
+            appendices=List[Appendix],
+            domain_index=DomainIndex  # NOUVEAU: index par domaine
         ),
         "workbook": Workbook(
             exercises_by_chapter=Dict[str, List[Exercise]],
+            exercises_by_domain=Dict[str, List[Exercise]],  # NOUVEAU
             self_assessment_tools=List[Tool]
         ),
         "digital_access": DigitalAccess(
@@ -812,6 +1045,33 @@ class YearPackage:
     # Métadonnées de qualité
     quality_certificate: QualityCertificate
     generation_report: GenerationReport
+    
+    # Analyse transversale (NOUVEAU)
+    cross_domain_analysis: CrossDomainAnalysisReport
+```
+
+### CrossDomainAnalysisReport (NOUVEAU)
+```python
+@dataclass
+class CrossDomainAnalysisReport:
+    """Rapport d'analyse des connexions entre domaines"""
+    
+    # Vue d'ensemble
+    total_cross_domain_activities: int
+    percentage_of_multidomain_content: float
+    
+    # Matrice de connexions
+    domain_connection_matrix: Dict[Tuple[str, str], int]
+    # Ex: {("nombres_calculs", "grandeurs_mesures"): 15}
+    
+    # Activités phares
+    highlight_activities: List[CrossDomainHighlight]
+    
+    # Recommandations pédagogiques
+    pedagogical_insights: List[str]
+    
+    # Graphique de connexions
+    connection_graph: NetworkGraph
 ```
 
 ### Document
@@ -840,7 +1100,8 @@ class Document:
         "version": "1.0",
         "language": "fr",
         "keywords": List[str],
-        "description": str
+        "description": str,
+        "domains_covered": List[str]  # NOUVEAU
     })
     
     # Propriétés
@@ -949,7 +1210,8 @@ class GenerationMetrics:
         "regeneration_count": int,
         "issues_found": int,
         "issues_fixed": int,
-        "final_quality_score": float
+        "final_quality_score": float,
+        "domain_balance_score": float  # NOUVEAU
     })
     
     # Volume
@@ -959,7 +1221,8 @@ class GenerationMetrics:
         "exercises_total": int,
         "evaluations_total": int,
         "pages_generated": int,
-        "words_written": int
+        "words_written": int,
+        "multidomain_content_percentage": float  # NOUVEAU
     })
     
     # Coûts
@@ -974,4 +1237,4 @@ class GenerationMetrics:
 
 ---
 
-Ce document détaille l'ensemble des structures de données et interfaces qui permettent la communication fluide entre tous les modules du système, garantissant ainsi la génération complète et cohérente d'une année de contenus pédagogiques.
+Ce document détaille l'ensemble des structures de données et interfaces qui permettent la communication fluide entre tous les modules du système, garantissant ainsi la génération complète et cohérente d'une année de contenus pédagogiques avec une approche multi-domaines réaliste.
